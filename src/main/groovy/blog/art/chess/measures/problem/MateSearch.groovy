@@ -43,7 +43,7 @@ class MateSearch {
                     Variation variationMin = searchMin(positionMin, nMoves, pseudoLegalMovesMin)
                     int distance = variationMin.value > 0 ? nMoves - variationMin.value + 1 : Integer.MAX_VALUE
                     List<Move> moves = [move] + variationMin.moves
-                    variations.add(new Variation(distance, moves))
+                    variations << new Variation(distance, moves)
                     if (distance <= nMoves) {
                         println "info string $move.uciCode: mate in $distance"
                     } else {
@@ -53,14 +53,13 @@ class MateSearch {
             }
             long end = System.currentTimeMillis()
             if (!variations.isEmpty()) {
-                variations.sort { it.value }
-                Variation principalVariation = variations[0]
+                Variation principalVariation = variations.min { it.value }
                 if (principalVariation.value <= nMoves) {
-                    println "info time ${end - begin} score mate $principalVariation.value pv ${principalVariation.moves*.uciCode.join(' ')}"
+                    println "info time ${end - begin} score mate $principalVariation.value pv ${principalVariation.moves.collect { it.uciCode }.join(' ')}"
                 } else {
                     println "info time ${end - begin}"
                 }
-                println "bestmove ${principalVariation.moves[0].uciCode}"
+                println "bestmove ${principalVariation.moves.first().uciCode}"
             } else {
                 println "info time ${end - begin}"
                 println "bestmove ${new NullMove().uciCode}"

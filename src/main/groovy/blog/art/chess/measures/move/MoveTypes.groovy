@@ -149,7 +149,7 @@ class DoubleStep extends Move {
     }
 
     @Override
-    protected Integer getEnPassantTarget() {
+    protected Integer newEnPassantTarget() {
         return stop
     }
 

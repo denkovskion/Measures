@@ -41,7 +41,7 @@ abstract class Move {
             boolean blackToMove = !position.blackToMove
             Set<Integer> castlingOrigins = new HashSet<>(position.castlingOrigins)
             updateCastlingOrigins(castlingOrigins)
-            Integer enPassantTarget = getEnPassantTarget()
+            Integer enPassantTarget = newEnPassantTarget()
             Position result = new Position(board, blackToMove, castlingOrigins, enPassantTarget)
             if (isPositionLegal(result, pseudoLegalMoves)) {
                 return result
@@ -58,7 +58,7 @@ abstract class Move {
 
     protected void updateCastlingOrigins(Set<Integer> castlingOrigins) {}
 
-    protected Integer getEnPassantTarget() {
+    protected Integer newEnPassantTarget() {
         return null
     }
 

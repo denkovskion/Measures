@@ -31,7 +31,7 @@ import groovy.transform.CompileStatic
 abstract class Piece {
     static boolean generateMoves(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
         for (int origin in 0..<64) {
-            Piece piece = board.get(origin)
+            Piece piece = board[origin]
             if (piece != null && piece.black == blackToMove) {
                 if (!piece.generateMoves(board, origin, castlingOrigins, enPassantTarget, moves)) {
                     return false
@@ -52,28 +52,22 @@ abstract class Piece {
     }
 
     static void validate(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins, Integer enPassantTarget) {
-        for (boolean value : [false, true]) {
-            int frequency = 0
-            for (Piece piece : board) {
-                if (piece instanceof King && piece.black == value) {
-                    frequency++
-                }
-            }
-            if (!(frequency == 1)) {
+        for (boolean value in [false, true]) {
+            if (!(board.count { it instanceof King && it.black == value } == 1)) {
                 throw new IllegalArgumentException('Not accepted number of kings')
             }
         }
-        for (int castlingOrigin : castlingOrigins) {
-            Piece piece = board.get(castlingOrigin)
+        for (int castlingOrigin in castlingOrigins) {
+            Piece piece = board[castlingOrigin]
             int file = castlingOrigin.intdiv(8) + 1
             int rank = castlingOrigin % 8 + 1
-            if (!((file == 5 && piece instanceof King || (file == 1 || file == 8) && piece instanceof Rook) && (rank == 1 && !piece.black || rank == 8 && piece.black))) {
+            if (!((file == 5 && piece instanceof King || file in [1, 8] && piece instanceof Rook) && (rank == 1 && !piece.black || rank == 8 && piece.black))) {
                 throw new IllegalArgumentException('Not accepted castling rights')
             }
         }
         if (enPassantTarget != null) {
-            Piece captured = board.get(enPassantTarget + (blackToMove ? 1 : -1))
-            if (!(enPassantTarget % 8 + 1 == (blackToMove ? 3 : 6) && board.get(enPassantTarget + (blackToMove ? -1 : 1)) == null && board.get(enPassantTarget) == null && captured instanceof Pawn && captured.black != blackToMove)) {
+            Piece captured = board[enPassantTarget + (blackToMove ? 1 : -1)]
+            if (!(enPassantTarget % 8 + 1 == (blackToMove ? 3 : 6) && board[enPassantTarget + (blackToMove ? -1 : 1)] == null && board[enPassantTarget] == null && captured instanceof Pawn && captured.black != blackToMove)) {
                 throw new IllegalArgumentException('Not accepted en passant square')
             }
         }

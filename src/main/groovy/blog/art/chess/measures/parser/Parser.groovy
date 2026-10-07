@@ -33,11 +33,10 @@ import java.util.regex.MatchResult
 @CompileStatic
 class Parser {
     static Position positionFen(String string) {
-        Scanner fields = new Scanner(string)
         try {
+            Scanner fields = new Scanner(string)
             List<Piece> board = [null] * 64 as List<Piece>
-            Scanner characters = new Scanner(fields.next())
-            characters.useDelimiter('')
+            Scanner characters = new Scanner(fields.next()).useDelimiter('')
             for (int rank in 8..1) {
                 for (int file = 1; file <= 8; file++) {
                     if (characters.hasNext("[${'12345678'.substring(0, 8 - (file - 1))}]")) {
@@ -49,29 +48,29 @@ class Parser {
                     String letter = characters.next('[KQRBNPkqrbnp]')
                     int square = (file - 1) * 8 + rank - 1
                     if (letter == 'K') {
-                        board.set(square, new King(false))
+                        board[square] = new King(false)
                     } else if (letter == 'Q') {
-                        board.set(square, new Queen(false))
+                        board[square] = new Queen(false)
                     } else if (letter == 'R') {
-                        board.set(square, new Rook(false))
+                        board[square] = new Rook(false)
                     } else if (letter == 'B') {
-                        board.set(square, new Bishop(false))
+                        board[square] = new Bishop(false)
                     } else if (letter == 'N') {
-                        board.set(square, new Knight(false))
+                        board[square] = new Knight(false)
                     } else if (letter == 'P') {
-                        board.set(square, new Pawn(false))
+                        board[square] = new Pawn(false)
                     } else if (letter == 'k') {
-                        board.set(square, new King(true))
+                        board[square] = new King(true)
                     } else if (letter == 'q') {
-                        board.set(square, new Queen(true))
+                        board[square] = new Queen(true)
                     } else if (letter == 'r') {
-                        board.set(square, new Rook(true))
+                        board[square] = new Rook(true)
                     } else if (letter == 'b') {
-                        board.set(square, new Bishop(true))
+                        board[square] = new Bishop(true)
                     } else if (letter == 'n') {
-                        board.set(square, new Knight(true))
+                        board[square] = new Knight(true)
                     } else if (letter == 'p') {
-                        board.set(square, new Pawn(true))
+                        board[square] = new Pawn(true)
                     }
                 }
                 characters.skip(rank > 1 ? '/' : '$')
@@ -88,20 +87,20 @@ class Parser {
                 fields.next()
             } else {
                 String[] letters = fields.next('\\bK?Q?k?q?').split('')
-                for (String letter : letters) {
+                for (String letter in letters) {
                     if (letter == 'K' || letter == 'Q') {
-                        castlingOrigins.add(32)
+                        castlingOrigins << 32
                     } else if (letter == 'k' || letter == 'q') {
-                        castlingOrigins.add(39)
+                        castlingOrigins << 39
                     }
                     if (letter == 'K') {
-                        castlingOrigins.add(56)
+                        castlingOrigins << 56
                     } else if (letter == 'Q') {
-                        castlingOrigins.add(0)
+                        castlingOrigins << 0
                     } else if (letter == 'k') {
-                        castlingOrigins.add(63)
+                        castlingOrigins << 63
                     } else if (letter == 'q') {
-                        castlingOrigins.add(7)
+                        castlingOrigins << 7
                     }
                 }
             }

@@ -36,9 +36,9 @@ class Main {
         Position position = Parser.positionFen('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1')
         BufferedReader reader = System.in.newReader()
         for (String line; (line = reader.readLine()) != null;) {
-            Scanner scanner = new Scanner(line)
-            if (scanner.hasNext()) {
-                try {
+            try {
+                Scanner scanner = new Scanner(line)
+                if (scanner.hasNext()) {
                     String command = scanner.next('uci|isready|position|go|quit')
                     if (command == 'uci') {
                         scanner.skip('\\s*$')
@@ -73,9 +73,9 @@ class Main {
                         scanner.skip('\\s*$')
                         System.exit(0)
                     }
-                } catch (NoSuchElementException ignored) {
-                    println 'info string Ignored line'
                 }
+            } catch (NoSuchElementException ignored) {
+                println 'info string Ignored line'
             }
         }
     }

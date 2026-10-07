@@ -28,76 +28,6 @@ import blog.art.chess.measures.move.*
 import groovy.transform.CompileStatic
 
 @CompileStatic
-abstract class Leaper extends Piece {
-    @Override
-    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
-        for (int direction : directions) {
-            int target = origin + direction
-            if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset && Math.abs(target % 8 - origin % 8) <= maxOffset) {
-                Piece other = board.get(target)
-                if (other != null) {
-                    if (other.black != black) {
-                        if (other instanceof King) {
-                            return false
-                        }
-                        if (moves != null) {
-                            moves.add(new Capture(origin, target))
-                        }
-                    }
-                } else {
-                    if (moves != null) {
-                        moves.add(new QuietMove(origin, target))
-                    }
-                }
-            }
-        }
-        return true
-    }
-
-    protected abstract int[] getDirections()
-
-    protected abstract int getMaxOffset()
-}
-
-@CompileStatic
-abstract class Rider extends Piece {
-    @Override
-    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
-        for (int direction : directions) {
-            for (int square = origin; ;) {
-                int target = square + direction
-                if (target in 0..<64 && Math.abs(target.intdiv(8) - square.intdiv(8)) <= maxOffset && Math.abs(target % 8 - square % 8) <= maxOffset) {
-                    Piece other = board.get(target)
-                    if (other != null) {
-                        if (other.black != black) {
-                            if (other instanceof King) {
-                                return false
-                            }
-                            if (moves != null) {
-                                moves.add(new Capture(origin, target))
-                            }
-                        }
-                        break
-                    } else {
-                        if (moves != null) {
-                            moves.add(new QuietMove(origin, target))
-                        }
-                    }
-                    square = target
-                } else {
-                    break
-                }
-            }
-        }
-        return true
-    }
-
-    protected abstract int[] getDirections()
-
-    protected abstract int getMaxOffset()
-}
-
-@CompileStatic
 class King extends Leaper {
     private final boolean black
 
@@ -115,28 +45,24 @@ class King extends Leaper {
         if (!super.generateMoves(board, origin, castlingOrigins, enPassantTarget, moves)) {
             return false
         }
-        if (castlingOrigins.contains(origin)) {
+        if (origin in castlingOrigins) {
             int[] castlingDirections = [-8, 8]
-            for (int direction : castlingDirections) {
+            for (int direction in castlingDirections) {
                 int target2 = origin + direction
-                if (board.get(target2) == null) {
+                if (board[target2] == null) {
                     int target = target2 + direction
-                    if (board.get(target) == null) {
+                    if (board[target] == null) {
                         if (direction > 0) {
                             int origin2 = target + direction
-                            if (castlingOrigins.contains(origin2)) {
-                                if (moves != null) {
-                                    moves.add(new Castling(origin, target, origin2, target2))
-                                }
+                            if (origin2 in castlingOrigins) {
+                                moves?.add(new Castling(origin, target, origin2, target2))
                             }
                         } else {
                             int stop = target + direction
-                            if (board.get(stop) == null) {
+                            if (board[stop] == null) {
                                 int origin2 = stop + direction
-                                if (castlingOrigins.contains(origin2)) {
-                                    if (moves != null) {
-                                        moves.add(new Castling(origin, target, origin2, target2))
-                                    }
+                                if (origin2 in castlingOrigins) {
+                                    moves?.add(new Castling(origin, target, origin2, target2))
                                 }
                             }
                         }
@@ -296,10 +222,10 @@ class Pawn extends Piece {
     protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
         int[] captureDirections = black ? [-9, 7] : [-7, 9]
         int maxOffset = 1
-        for (int direction : captureDirections) {
+        for (int direction in captureDirections) {
             int target = origin + direction
             if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset && Math.abs(target % 8 - origin % 8) <= maxOffset) {
-                Piece other = board.get(target)
+                Piece other = board[target]
                 if (other != null) {
                     if (other.black != black) {
                         if (other instanceof King) {
@@ -307,24 +233,18 @@ class Pawn extends Piece {
                         }
                         if (origin % 8 == (black ? 1 : 6)) {
                             Piece[] box = [new Queen(black), new Rook(black), new Bishop(black), new Knight(black)]
-                            for (Piece promoted : box) {
-                                if (moves != null) {
-                                    moves.add(new PromotionCapture(origin, target, promoted))
-                                }
+                            for (Piece promoted in box) {
+                                moves?.add(new PromotionCapture(origin, target, promoted))
                             }
                         } else {
-                            if (moves != null) {
-                                moves.add(new Capture(origin, target))
-                            }
+                            moves?.add(new Capture(origin, target))
                         }
                     }
                 } else {
                     if (enPassantTarget != null) {
                         if (target == enPassantTarget) {
                             int stop = (target.intdiv(8)) * 8 + origin % 8
-                            if (moves != null) {
-                                moves.add(new EnPassant(origin, target, stop))
-                            }
+                            moves?.add(new EnPassant(origin, target, stop))
                         }
                     }
                 }
@@ -333,24 +253,18 @@ class Pawn extends Piece {
         int direction = black ? -1 : 1
         int target = origin + direction
         if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset && Math.abs(target % 8 - origin % 8) <= maxOffset) {
-            if (board.get(target) == null) {
+            if (board[target] == null) {
                 if (origin % 8 == (black ? 1 : 6)) {
                     Piece[] box = [new Queen(black), new Rook(black), new Bishop(black), new Knight(black)]
-                    for (Piece promoted : box) {
-                        if (moves != null) {
-                            moves.add(new Promotion(origin, target, promoted))
-                        }
+                    for (Piece promoted in box) {
+                        moves?.add(new Promotion(origin, target, promoted))
                     }
                 } else {
-                    if (moves != null) {
-                        moves.add(new QuietMove(origin, target))
-                    }
+                    moves?.add(new QuietMove(origin, target))
                     if (origin % 8 == (black ? 6 : 1)) {
                         int target2 = target + direction
-                        if (board.get(target2) == null) {
-                            if (moves != null) {
-                                moves.add(new DoubleStep(origin, target2, target))
-                            }
+                        if (board[target2] == null) {
+                            moves?.add(new DoubleStep(origin, target2, target))
                         }
                     }
                 }
