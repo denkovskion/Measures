@@ -52,8 +52,8 @@ abstract class Piece {
     }
 
     static void validate(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins, Integer enPassantTarget) {
-        for (boolean value in [false, true]) {
-            if (!(board.count { it instanceof King && it.black == value } == 1)) {
+        for (boolean black in [false, true]) {
+            if (!(board.count { it instanceof King && it.black == black } == 1)) {
                 throw new IllegalArgumentException('Not accepted number of kings')
             }
         }

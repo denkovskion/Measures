@@ -110,8 +110,8 @@ class Parser {
             } else {
                 fields.next('([a-h])([36])')
                 MatchResult result = fields.match()
-                int file = 1 + (result.group(1).charAt(0) as int) - ('a' as int)
-                int rank = 1 + (result.group(2).charAt(0) as int) - ('1' as int)
+                int file = 1 + (result.group(1).charAt(0) - ('a' as char))
+                int rank = 1 + (result.group(2).charAt(0) - ('1' as char))
                 enPassantTarget = (file - 1) * 8 + rank - 1
             }
             fields.next('0|[1-9]\\d*')
