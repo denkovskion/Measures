@@ -55,7 +55,8 @@ class MateSearch {
             if (!variations.isEmpty()) {
                 Variation principalVariation = variations.min { it.value }
                 if (principalVariation.value <= nMoves) {
-                    println "info time ${end - begin} score mate $principalVariation.value pv ${principalVariation.moves.collect { it.uciCode }.join(' ')}"
+                    String pv = principalVariation.moves.collect { it.uciCode }.join(' ')
+                    println "info time ${end - begin} score mate $principalVariation.value pv $pv"
                 } else {
                     println "info time ${end - begin}"
                 }

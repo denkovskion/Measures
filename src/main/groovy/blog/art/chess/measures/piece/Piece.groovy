@@ -29,7 +29,8 @@ import groovy.transform.CompileStatic
 
 @CompileStatic
 abstract class Piece {
-    static boolean generateMoves(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
+    static boolean generateMoves(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins,
+            Integer enPassantTarget, List<Move> moves) {
         for (int origin in 0..<64) {
             Piece piece = board[origin]
             if (piece != null && piece.black == blackToMove) {
@@ -43,7 +44,8 @@ abstract class Piece {
 
     protected abstract boolean isBlack()
 
-    protected abstract boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves)
+    protected abstract boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins,
+            Integer enPassantTarget, List<Move> moves)
 
     abstract String getUciCode()
 
@@ -51,7 +53,8 @@ abstract class Piece {
         return new String([('a' as char) + square.intdiv(8), ('1' as char) + square % 8] as char[])
     }
 
-    static void validate(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins, Integer enPassantTarget) {
+    static void validate(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins,
+            Integer enPassantTarget) {
         for (boolean black in [false, true]) {
             if (!(board.count { it instanceof King && it.black == black } == 1)) {
                 throw new IllegalArgumentException('Not accepted number of kings')
@@ -61,13 +64,16 @@ abstract class Piece {
             Piece piece = board[castlingOrigin]
             int file = castlingOrigin.intdiv(8) + 1
             int rank = castlingOrigin % 8 + 1
-            if (!((file == 5 && piece instanceof King || file in [1, 8] && piece instanceof Rook) && (rank == 1 && !piece.black || rank == 8 && piece.black))) {
+            if (!((file == 5 && piece instanceof King || file in [1, 8] && piece instanceof Rook) &&
+                    (rank == 1 && !piece.black || rank == 8 && piece.black))) {
                 throw new IllegalArgumentException('Not accepted castling rights')
             }
         }
         if (enPassantTarget != null) {
             Piece captured = board[enPassantTarget + (blackToMove ? 1 : -1)]
-            if (!(enPassantTarget % 8 + 1 == (blackToMove ? 3 : 6) && board[enPassantTarget + (blackToMove ? -1 : 1)] == null && board[enPassantTarget] == null && captured instanceof Pawn && captured.black != blackToMove)) {
+            if (!(enPassantTarget % 8 + 1 == (blackToMove ? 3 : 6) && board[enPassantTarget + (blackToMove ? -1 : 1)] ==
+                    null && board[enPassantTarget] == null && captured instanceof Pawn && captured.black !=
+                    blackToMove)) {
                 throw new IllegalArgumentException('Not accepted en passant square')
             }
         }

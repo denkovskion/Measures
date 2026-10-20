@@ -41,7 +41,8 @@ class Position {
         this.enPassantTarget = enPassantTarget
     }
 
-    static Position newInstance(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins, Integer enPassantTarget) {
+    static Position newInstance(List<Piece> board, boolean blackToMove, Set<Integer> castlingOrigins,
+            Integer enPassantTarget) {
         Piece.validate(board, blackToMove, castlingOrigins, enPassantTarget)
         return new Position(new ArrayList<>(board), blackToMove, new HashSet<>(castlingOrigins), enPassantTarget)
     }

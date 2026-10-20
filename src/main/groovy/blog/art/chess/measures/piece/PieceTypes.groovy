@@ -41,7 +41,8 @@ class King extends Leaper {
     }
 
     @Override
-    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
+    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins,
+            Integer enPassantTarget, List<Move> moves) {
         if (!super.generateMoves(board, origin, castlingOrigins, enPassantTarget, moves)) {
             return false
         }
@@ -219,12 +220,14 @@ class Pawn extends Piece {
     }
 
     @Override
-    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
+    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins,
+            Integer enPassantTarget, List<Move> moves) {
         int[] captureDirections = black ? [-9, 7] : [-7, 9]
         int maxOffset = 1
         for (int direction in captureDirections) {
             int target = origin + direction
-            if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset && Math.abs(target % 8 - origin % 8) <= maxOffset) {
+            if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset &&
+                    Math.abs(target % 8 - origin % 8) <= maxOffset) {
                 Piece other = board[target]
                 if (other != null) {
                     if (other.black != black) {
@@ -252,7 +255,8 @@ class Pawn extends Piece {
         }
         int direction = black ? -1 : 1
         int target = origin + direction
-        if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset && Math.abs(target % 8 - origin % 8) <= maxOffset) {
+        if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset &&
+                Math.abs(target % 8 - origin % 8) <= maxOffset) {
             if (board[target] == null) {
                 if (origin % 8 == (black ? 1 : 6)) {
                     Piece[] box = [new Queen(black), new Rook(black), new Bishop(black), new Knight(black)]

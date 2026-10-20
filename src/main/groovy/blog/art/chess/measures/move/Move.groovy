@@ -31,7 +31,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class Move {
     static boolean isPositionLegal(Position position, List<Move> pseudoLegalMoves) {
-        return Piece.generateMoves(position.board, position.blackToMove, position.castlingOrigins, position.enPassantTarget, pseudoLegalMoves)
+        return Piece.generateMoves(position.board, position.blackToMove, position.castlingOrigins,
+                position.enPassantTarget, pseudoLegalMoves)
     }
 
     Position make(Position position, List<Move> pseudoLegalMoves) {

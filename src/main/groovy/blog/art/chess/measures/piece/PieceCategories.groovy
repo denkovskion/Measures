@@ -32,10 +32,12 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class Leaper extends Piece {
     @Override
-    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
+    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins,
+            Integer enPassantTarget, List<Move> moves) {
         for (int direction in directions) {
             int target = origin + direction
-            if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset && Math.abs(target % 8 - origin % 8) <= maxOffset) {
+            if (target in 0..<64 && Math.abs(target.intdiv(8) - origin.intdiv(8)) <= maxOffset &&
+                    Math.abs(target % 8 - origin % 8) <= maxOffset) {
                 Piece other = board[target]
                 if (other != null) {
                     if (other.black != black) {
@@ -60,12 +62,14 @@ abstract class Leaper extends Piece {
 @CompileStatic
 abstract class Rider extends Piece {
     @Override
-    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins, Integer enPassantTarget, List<Move> moves) {
+    protected boolean generateMoves(List<Piece> board, int origin, Set<Integer> castlingOrigins,
+            Integer enPassantTarget, List<Move> moves) {
         for (int direction in directions) {
             int square = origin
             while (true) {
                 int target = square + direction
-                if (target in 0..<64 && Math.abs(target.intdiv(8) - square.intdiv(8)) <= maxOffset && Math.abs(target % 8 - square % 8) <= maxOffset) {
+                if (target in 0..<64 && Math.abs(target.intdiv(8) - square.intdiv(8)) <= maxOffset &&
+                        Math.abs(target % 8 - square % 8) <= maxOffset) {
                     Piece other = board[target]
                     if (other != null) {
                         if (other.black != black) {
